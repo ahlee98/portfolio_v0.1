@@ -1,0 +1,1348 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>하나은행 아이부자 앱 UX 컨설팅</title>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+  <link href="https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/static/pretendard.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --dark: #1b1b1f;
+      --dark2: #2e2e35;
+      --purple: #5b4efe;
+      --gray50: #f5f6f7;
+      --gray300: #b1b7c6;
+      --gray400: #979eb2;
+      --gray500: #7d85a0;
+      --gray600: #676e86;
+      --gray800: #41424e;
+      --white: #ffffff;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Pretendard', -apple-system, sans-serif;
+      background: #f5f6f7;
+      width: 1920px;
+    }
+
+    /* ── SCROLL REVEAL ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    .reveal-slow {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal-slow.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    #img01-wrap-1 { margin-top: 0; } /* sec-bg 이미지와의 이상한 선 제거 */
+    #img01-wrap-2 { transition-delay: 0.15s; }
+    #img01-wrap-3 { transition-delay: 0.3s; }
+    /* img01-03 완료 전까지 이후 영역 숨김 */
+    #after-cols {
+      opacity: 0;
+      transition: opacity 1s ease;
+    }
+    #after-cols.visible { opacity: 1; }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    /* (seq-reveal 제거됨 — sticky stack JS로 대체) */
+    ._unused_seq_reveal_placeholder {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 1.2s ease, transform 1.2s ease;
+    }
+    ._unused_seq_reveal_placeholder.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+    .reveal-delay-4 { transition-delay: 0.4s; }
+    .reveal-delay-5 { transition-delay: 0.5s; }
+
+    /* ── SECTION BASE ── */
+    .sec { width: 1920px; }
+    .inner { width: 1920px; padding: 0 80px; }
+
+    /* ══════════════════════
+       SEC 01 — HERO
+    ══════════════════════ */
+    #sec-hero {
+      background: var(--gray50);
+      min-height: 100vh;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+    .hero-nav {
+      position: relative;
+      display: flex;
+      align-items: center;
+      padding: 60px 80px 0;
+      width: 1920px;
+    }
+    .hero-nav .nav-left  { position: absolute; left: 80px; }
+    .hero-nav .nav-center { margin: 0 auto; }
+    .hero-nav .nav-right { position: absolute; right: 80px; }
+    .hero-nav span {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      font-size: 18px;
+      color: var(--purple);
+      line-height: 1.3;
+    }
+    .hero-body {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr 1.55fr 1fr;
+      gap: 60px;
+      align-items: center;
+      padding: 60px 80px 100px;
+      width: 1920px;
+    }
+
+    /* ── Hero: 좌측 텍스트 ── */
+    .hero-text {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .hero-kicker {
+      font-size: 18px;
+      font-weight: 500;
+      color: var(--gray500);
+      margin-bottom: 24px;
+    }
+    .hero-h1 {
+      font-size: 50px;
+      font-weight: 800;
+      line-height: 1.4;
+      letter-spacing: -0.04em;
+      color: var(--dark);
+      margin-bottom: 32px;
+    }
+    .hero-role {
+      font-size: 18px;
+      font-weight: 500;
+      color: var(--gray500);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .hero-role::before {
+      content: '';
+      display: block;
+      width: 28px;
+      height: 1px;
+      background: var(--gray300);
+      flex-shrink: 0;
+    }
+
+    /* ── Hero: 중앙 폰 ── */
+    .hero-phone-col {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      animation: heroFloat 7s ease-in-out infinite;
+    }
+    @keyframes heroFloat {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-14px); }
+    }
+    .hero-phone-wrap {
+      position: relative;
+      width: 320px;
+      height: 691px;
+      border-radius: 34px;
+      overflow: hidden;
+      border: 5px solid var(--dark2);
+      box-shadow: 0 24px 64px rgba(0,0,0,0.18);
+    }
+    .hero-phone-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* ── Hero: 우측 Overview ── */
+    .hero-overview {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .overview-label {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--gray500);
+      margin-bottom: 20px;
+      letter-spacing: 0.04em;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .overview-label::before {
+      content: '';
+      display: block;
+      width: 20px;
+      height: 1px;
+      background: var(--gray500);
+      flex-shrink: 0;
+    }
+    .overview-body {
+      font-size: 20px;
+      line-height: 1.8;
+      color: var(--gray800);
+    }
+    .overview-body strong {
+      font-weight: 700;
+      color: var(--dark);
+    }
+
+    /* ══════════════════════
+       SEC 02 — PROJECT INFO
+    ══════════════════════ */
+    #sec-info {
+      background: var(--white);
+      padding: 40px 0 0;
+    }
+    .info-desc {
+      font-size: 40px;
+      font-weight: 800;
+      color: #1b1b1f;
+      line-height: 160%;
+      max-width: 849px;
+      margin-bottom: 24px;
+    }
+    .info-divider {
+      width: 100%;
+      max-width: 849px;
+      height: 1px;
+      background: #e0e2ea;
+      margin-bottom: 20px;
+    }
+    .info-meta {
+      display: flex;
+      gap: 80px;
+    }
+    .info-meta-item label {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--gray500);
+      display: block;
+      margin-bottom: 6px;
+    }
+    .info-meta-item p {
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--gray800);
+    }
+
+    /* ══════════════════════
+       SEC 03 — PROJECT BACKGROUND
+    ══════════════════════ */
+    #sec-bg {
+      background: #1A1C20;
+      padding: 350px 0 4px;
+    }
+    #sec-bg .text-block {
+      width: 1040px;
+    }
+    .text-label {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--gray300);
+      margin-bottom: 20px;
+      letter-spacing: 0.02em;
+    }
+    .text-label.dark { color: var(--gray600); }
+    .section-heading {
+      font-size: 21px;
+      font-weight: 700;
+      color: var(--dark);
+      line-height: 1.5;
+      margin-bottom: 14px;
+    }
+    .section-heading.light { color: var(--gray50); }
+    .section-body {
+      font-size: 18px;
+      font-weight: 400;
+      color: var(--gray800);
+      line-height: 1.7;
+      margin-bottom: 10px;
+    }
+    .section-body.light { color: var(--gray400); }
+    .section-footnote {
+      font-size: 14px;
+      color: var(--gray400);
+      line-height: 1.7;
+      margin-top: 12px;
+    }
+    .section-footnote.light { color: var(--gray500); }
+    .full-image {
+      margin-top: 60px;
+      width: 100%;
+    }
+    .full-image img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 16px;
+    }
+
+    /* ══════════════════════
+       SEC 04 — STICKY STACK
+    ══════════════════════ */
+    #sec-cols {
+      background: #1A1C20;
+      padding: 80px 0 80px;
+    }
+    #img01-wrap-1 img,
+    #img01-wrap-2 img,
+    #img01-wrap-3 img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* ══════════════════════
+       SEC 05 — DISCOVER
+    ══════════════════════ */
+    #sec-discover {
+      background: var(--white);
+      padding: 100px 0;
+    }
+    .right-text {
+      width: 1040px;
+      margin-left: auto;
+    }
+    .two-panels {
+      display: flex;
+      gap: 10px;
+      margin-top: 60px;
+      align-items: flex-start;
+    }
+    .two-panels > div:first-child {
+      width: 710px;
+      flex-shrink: 0;
+    }
+    .two-panels > div:last-child {
+      width: 1040px;
+      flex-shrink: 0;
+    }
+    .two-panels img,
+    .single-panel img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 16px;
+    }
+
+    /* ══════════════════════
+       SEC 06 — DEFINE
+    ══════════════════════ */
+    #sec-define {
+      background: transparent;
+      padding: 100px 0;
+    }
+    .single-panel {
+      margin-top: 60px;
+      margin-left: auto;
+      width: 1040px;
+    }
+    .define-footnote {
+      font-size: 13px;
+      color: var(--gray400);
+      line-height: 1.7;
+      margin-top: 10px;
+      width: 1040px;
+      margin-left: auto;
+    }
+
+    /* ══════════════════════
+       SEC 07 — SERVICE CONCEPT
+    ══════════════════════ */
+    #sec-concept {
+      background: transparent;
+      padding: 120px 0 100px;
+    }
+    .concept-text {
+      max-width: 680px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .concept-text .text-label { color: var(--gray500); text-align: center; }
+    .concept-title {
+      font-size: 40px;
+      font-weight: 900;
+      color: var(--purple);
+      line-height: 1.4;
+      margin-bottom: 16px;
+    }
+    .concept-subtitle {
+      font-size: 18px;
+      color: var(--gray800);
+      line-height: 1.7;
+    }
+    .concept-image {
+      margin-top: 60px;
+      width: 1410px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .concept-image img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 20px;
+    }
+
+    /* ══════════════════════
+       SEC 08-09 — UI CONCEPT (dark)
+    ══════════════════════ */
+    #sec-ui1, #sec-ui2 {
+      background: var(--dark);
+      padding: 100px 0;
+    }
+    #sec-ui1 .inner, #sec-ui2 .inner { }
+    .ui-text { max-width: 1080px; }
+
+    /* Cycling image */
+    .cycling-wrap {
+      margin-top: 60px;
+      position: relative;
+      width: 100%;
+    }
+    .cycling-img {
+      display: none;
+      width: 100%;
+      height: auto;
+      border-radius: 16px;
+    }
+    .cycling-img.active { display: block; }
+
+    .big-image {
+      margin-top: 60px;
+      width: 100%;
+    }
+    .big-image img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 16px;
+    }
+
+    /* ══════════════════════
+       SEC 10-11 — SVG / PARTICLE SECTIONS
+    ══════════════════════ */
+    #sec-svg1 {
+      background: var(--dark);
+      padding: 80px 0 20px;
+    }
+    #sec-svg2 {
+      background: var(--dark);
+      padding: 0 0 120px;
+    }
+    /* SVG01 — PNG + confetti overlay */
+    .svg1-scene {
+      position: relative;
+      width: 928px;
+      height: 627px;
+      margin: 0 auto;
+      cursor: none;
+    }
+    /* Click! 커스텀 커서 */
+    #click-cursor {
+      position: fixed;
+      pointer-events: none;
+      font-size: 17px;
+      font-weight: 700;
+      color: #fff;
+      background: rgba(0,0,0,0.6);
+      padding: 6px 16px;
+      border-radius: 20px;
+      transform: translate(-50%, calc(-100% - 12px));
+      opacity: 0;
+      transition: opacity 0.18s ease;
+      white-space: nowrap;
+      z-index: 9999;
+      top: 0; left: 0;
+    }
+    #click-cursor.visible { opacity: 1; }
+    .svg1-img {
+      width: 928px;
+      height: 627px;
+      display: block;
+      object-fit: cover;
+    }
+    .svg1-scene .particle-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    .particle-scene {
+      position: relative;
+      width: 918px;
+      max-width: 100%;
+      height: 627px;
+      margin: 0 auto;
+      border-radius: 24px;
+      overflow: hidden;
+      background: #e4e5ec;
+    }
+    .particle-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+    .particle-card {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 335px;
+      background: var(--white);
+      border-radius: 24px;
+      padding: 40px 32px 32px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.10);
+      text-align: center;
+      z-index: 2;
+    }
+    .card-tag {
+      font-size: 13px;
+      color: var(--gray500);
+      margin-bottom: 10px;
+    }
+    .card-title {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--dark);
+      line-height: 1.4;
+      margin-bottom: 28px;
+    }
+    .card-amount-label {
+      font-size: 13px;
+      color: var(--gray500);
+      margin-bottom: 4px;
+    }
+    .card-amount {
+      font-size: 28px;
+      font-weight: 900;
+      color: var(--dark);
+      margin-bottom: 12px;
+    }
+    .card-note {
+      font-size: 13px;
+      color: var(--gray500);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      margin-bottom: 24px;
+    }
+    .card-note::before {
+      content: '✓';
+      color: var(--purple);
+      font-weight: 700;
+    }
+    .card-btn {
+      width: 100%;
+      background: var(--purple);
+      color: var(--white);
+      border: none;
+      border-radius: 50px;
+      padding: 14px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: 'Pretendard', sans-serif;
+    }
+    /* SVG2 card specifics */
+    .card-reward-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .card-pill {
+      border-radius: 16px;
+      padding: 16px 20px;
+      min-width: 110px;
+      text-align: center;
+    }
+    .card-pill.pink { background: #ffd6e7; }
+    .card-pill.blue { background: #c8eeff; }
+    .card-pill label { font-size: 11px; color: var(--gray500); display: block; margin-bottom: 6px; }
+    .card-pill span { font-size: 14px; font-weight: 700; color: var(--dark); }
+    .plus-sign { font-size: 20px; color: var(--gray400); font-weight: 600; }
+
+    /* ══════════════════════
+       SEC 12 — FINAL
+    ══════════════════════ */
+    #sec-final {
+      background: #000;
+      padding: 120px 0 250px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .final-label {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--purple);
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .final-heading {
+      font-size: 45px;
+      font-weight: 700;
+      color: var(--white);
+      text-align: center;
+      margin-bottom: 60px;
+      line-height: 1.4;
+    }
+    /* img08 + fade */
+    .final-img08-wrap {
+      position: relative;
+      width: 375px;
+      margin: 0 auto;
+    }
+    .final-img08-wrap img {
+      width: 375px;
+      height: auto;
+      display: block;
+    }
+    /* 이미지 하단 → 검정 배경으로 자연스럽게 녹이는 오버레이 */
+    .final-img08-fade {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 460px;
+      background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, #000000 100%);
+      pointer-events: none;
+    }
+    /* 회고 */
+    .retro-section {
+      width: 1920px;
+      padding: 0 80px;
+      margin: 120px 0 0;
+      box-sizing: border-box;
+    }
+    .retro-label {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--purple);
+      margin-bottom: 24px;
+    }
+    .retro-body {
+      font-size: 18px;
+      color: var(--gray300);
+      line-height: 1.85;
+      max-width: 1080px;
+      margin: 0 0 20px;
+    }
+    .retro-body:last-of-type { margin-bottom: 0; }
+    /* 푸터 */
+    .final-footer {
+      width: 1920px;
+      padding: 0 80px;
+      box-sizing: border-box;
+      margin: 80px 0 120px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--gray600);
+    }
+
+    /* ── PROGRESS ── */
+    #progress {
+      position: fixed; top: 0; left: 0; z-index: 9999;
+      height: 2px; width: 0;
+      background: var(--purple);
+      transition: width .08s linear;
+    }
+
+    /* ── TOP NAV ── */
+    #nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 999;
+      height: 60px;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 80px;
+      transition: background .4s, border-color .4s;
+    }
+    .nav-title {
+      position: absolute; left: 50%; transform: translateX(-50%);
+    }
+    #nav.frosted {
+      background: rgba(245,246,247,.88);
+      backdrop-filter: saturate(180%) blur(20px);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      border-bottom: 1px solid rgba(0,0,0,.06);
+    }
+    #nav.dark-nav {
+      background: rgba(27,27,31,.9);
+      backdrop-filter: saturate(180%) blur(20px);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      border-bottom: 1px solid rgba(255,255,255,.06);
+    }
+    .nav-tag {
+      font-size: 13px; font-weight: 600;
+      letter-spacing: .08em; text-transform: uppercase;
+      color: var(--gray500);
+      transition: color .3s;
+    }
+    #nav.dark-nav .nav-tag { color: rgba(255,255,255,.45); }
+    .nav-title {
+      font-size: 15px; font-weight: 500;
+      color: var(--dark);
+      transition: color .3s;
+    }
+    #nav.dark-nav .nav-title { color: rgba(255,255,255,.85); }
+    .nav-back {
+      font-size: 15px; font-weight: 500; color: var(--purple);
+      cursor: pointer; letter-spacing: -.01em;
+      transition: opacity .2s;
+      text-decoration: none;
+    }
+    .nav-back:hover { opacity: .6; }
+
+    /* ── PROJECT NAV ── */
+    .proj-nav-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      width: 1920px;
+      box-sizing: border-box;
+    }
+    .proj-nav-card {
+      background: var(--dark);
+      padding: 56px 80px;
+      text-decoration: none;
+      color: rgba(255,255,255,0.85);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      gap: 18px;
+      min-height: 220px;
+      transition: background 0.25s;
+    }
+    .proj-nav-card + .proj-nav-card { border-left: 1px solid rgba(255,255,255,0.07); }
+    .proj-nav-card:hover { background: #252529; }
+    .proj-nav-card.next { text-align: right; align-items: flex-end; }
+    .proj-nav-dir {
+      font-size: 13px; font-weight: 600;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      opacity: 0.35;
+    }
+    .proj-nav-num {
+      font-size: 13px; font-weight: 600;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      opacity: 0.45;
+    }
+    .proj-nav-title {
+      font-size: 26px; font-weight: 500;
+      letter-spacing: -0.025em; line-height: 1.25;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--dark); color: rgba(255,255,255,.35);
+      padding: 60px 80px;
+      display: flex; justify-content: space-between; align-items: center;
+      width: 1920px; box-sizing: border-box;
+    }
+    .ft-left { font-size: 15px; line-height: 1.7; }
+    .ft-name { color: rgba(255,255,255,.75); font-weight: 600; margin-bottom: 4px; font-size: 16px; }
+    .ft-right { font-size: 14px; text-align: right; }
+
+  </style>
+</head>
+<body>
+<div id="click-cursor">Click!</div>
+
+<div id="progress"></div>
+
+<nav id="nav">
+  <span class="nav-tag">Portfolio · 02</span>
+  <span class="nav-title">아이부자 UX 컨설팅</span>
+  <a class="nav-back" href="./index.html">← Home</a>
+</nav>
+
+<!-- ══════════════════════
+     SEC 01 — HERO
+══════════════════════ -->
+<section id="sec-hero" class="sec">
+  <div class="hero-body" style="padding-top: 100px;">
+
+    <!-- 좌: 텍스트 -->
+    <div class="hero-text reveal reveal-delay-1">
+      <p class="hero-kicker">하나은행 아이부자 앱 UX 컨설팅</p>
+      <h1 class="hero-h1">아이부자 서비스의<br>새로운 역할 정의</h1>
+    </div>
+
+    <!-- 중: 폰 목업 -->
+    <div class="hero-phone-col reveal reveal-delay-2">
+      <div class="hero-phone-wrap">
+        <img src="./images/project02/img-00.png" alt="아이부자 앱 스크린" />
+      </div>
+    </div>
+
+    <!-- 우: Overview -->
+    <div class="hero-overview reveal reveal-delay-3">
+      <p class="overview-label">Overview</p>
+      <p class="overview-body">
+        12세 이후 사용자의 이탈 문제를 해결하기 위해<br><span style="font-weight:600;">아이부자만의 차별화된 서비스 역할을 새롭게 정의하는<br>UX 전략 컨설팅</span>을 수행하였습니다
+      </p>
+      <div style="width:100%; height:1px; background:#e0e2ea; margin: 28px 0 24px;"></div>
+      <div class="info-meta">
+        <div class="info-meta-item">
+          <label>수행업무</label>
+          <p>UX 전략 설계 60% / UI 디자인 30%</p>
+        </div>
+        <div class="info-meta-item">
+          <label>기간</label>
+          <p>2026.03 ~ 2026.06</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ══════════════════════
+     SEC 03 — PROJECT BACKGROUND
+══════════════════════ -->
+<section id="sec-bg" class="sec">
+  <div class="inner">
+    <div class="text-block reveal">
+      <p class="text-label" style="color:var(--gray500);">Project Background</p>
+      <h2 class="section-heading" style="font-size:45px; color:#ffffff; line-height:140%; margin-bottom:14px;">인지된 핵심 문제점:<br>12세 무렵의 만족도 저하 - 이탈</h2>
+      <p class="section-body" style="color:var(--gray400);">
+        아이부자는 국내 대표 미성년자 금융 앱으로, 어린이·청소년 고객을 확보하고 성인이 된 이후에는 하나원큐로 자연스럽게 전환시키는 것을 목표로 하고 있습니다. 그러나 12세 이후 사용자가 급격히 이탈하는 문제가 발생하고 있었습니다. 이탈한 사용자들은 하나원큐로 이어지지 않고 경쟁 서비스로 이동하면서, 하나은행이 기대했던 장기 고객 확보 체계가 제대로 작동하지 않는 상황이었습니다.
+      </p>
+      <p class="section-footnote" style="color:var(--gray500);">NPS 자녀 응답 및 이해관계자 인터뷰</p>
+    </div>
+    <div class="full-image reveal reveal-delay-1">
+      <img src="./images/project02/img-01.png" alt="만족도 변화 그래프" />
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════
+     SEC 04 — THREE IMAGES (원인 / 대응 / 문제)
+══════════════════════ -->
+<section id="sec-cols" class="sec">
+  <div class="inner">
+
+    <!-- 원인 -->
+    <div class="reveal-slow" id="img01-wrap-1" style="display:flex; gap:4px; width:100%; margin-top:0;">
+      <div style="display:flex; flex-direction:row; gap:40px; padding:60px; flex:1 0 0; border-radius:60px; background:rgba(0,0,0,0.30); align-items:flex-start;">
+        <p style="color:#5B4EFE; font-family:Pretendard,sans-serif; font-size:16px; font-weight:500; line-height:22px; flex-shrink:0; min-width:60px;">원인 01</p>
+        <div>
+          <p style="color:#FFFFFF; font-size:22px; font-weight:700; line-height:150%; margin-bottom:16px;">유치하게 인식되는 브랜드·UI</p>
+          <p style="color:#7D85A0; font-size:18px; font-weight:400; line-height:150%;">초등학생 때는 괜찮았던 요소가 고학년이 되면<br>어린이 앱처럼 느껴집니다.</p>
+        </div>
+      </div>
+      <div style="display:flex; flex-direction:row; gap:40px; padding:60px; flex:1 0 0; border-radius:60px; background:rgba(0,0,0,0.30); align-items:flex-start;">
+        <p style="color:#5B4EFE; font-family:Pretendard,sans-serif; font-size:16px; font-weight:500; line-height:22px; flex-shrink:0; min-width:60px;">원인 02</p>
+        <div>
+          <p style="color:#FFFFFF; font-size:22px; font-weight:700; line-height:150%; margin-bottom:16px;">부모의 소비 간섭·감시 이미지</p>
+          <p style="color:#7D85A0; font-size:18px; font-weight:400; line-height:150%;">자녀는 앱이 감시 도구로 인식되어 부담스럽고<br>자율성이 침해된다는 느낌을 받습니다.</p>
+        </div>
+      </div>
+      <div style="display:flex; flex-direction:row; gap:40px; padding:60px; flex:1 0 0; border-radius:60px; background:rgba(0,0,0,0.30); align-items:flex-start;">
+        <p style="color:#5B4EFE; font-family:Pretendard,sans-serif; font-size:16px; font-weight:500; line-height:22px; flex-shrink:0; min-width:60px;">원인 03</p>
+        <div>
+          <p style="color:#FFFFFF; font-size:22px; font-weight:700; line-height:150%; margin-bottom:16px;">강한 또래문화의 대안</p>
+          <p style="color:#7D85A0; font-size:18px; font-weight:400; line-height:150%;">토스·카카오뱅크가 또래 안에서 기준이 되어 함께<br>사용하기 위해 아이부자를 이탈합니다.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 대응 -->
+    <div class="reveal-slow" id="img01-wrap-2" style="display:flex; gap:4px; width:100%; margin-top:10px;">
+      <div style="display:flex; flex-direction:row; gap:40px; padding:60px; flex:1 0 0; border-radius:60px; background:#F2F2F7; align-items:center;">
+        <p style="color:#5B4EFE; font-family:Pretendard,sans-serif; font-size:16px; font-weight:500; line-height:22px; flex-shrink:0;">대응 01</p>
+        <p style="color:#1B1B1F; font-size:22px; font-weight:700; line-height:150%;">리브랜딩 · UI 개선</p>
+      </div>
+      <div style="display:flex; flex-direction:row; gap:40px; padding:60px; flex:1 0 0; border-radius:60px; background:#F2F2F7; align-items:center;">
+        <p style="color:#5B4EFE; font-family:Pretendard,sans-serif; font-size:16px; font-weight:500; line-height:22px; flex-shrink:0;">대응 02</p>
+        <p style="color:#1B1B1F; font-size:22px; font-weight:700; line-height:150%;">간섭을 제거한 독립적 금융</p>
+      </div>
+      <div style="display:flex; flex-direction:row; gap:40px; padding:60px; flex:1 0 0; border-radius:60px; background:#F2F2F7; align-items:center;">
+        <p style="color:#5B4EFE; font-family:Pretendard,sans-serif; font-size:16px; font-weight:500; line-height:22px; flex-shrink:0;">대응 03</p>
+        <p style="color:#1B1B1F; font-size:22px; font-weight:700; line-height:150%;">또래문화를 형성할 수 있는 기능</p>
+      </div>
+    </div>
+
+    <!-- 문제 -->
+    <div class="reveal-slow" id="img01-wrap-3" style="display:flex; gap:4px; width:100%; margin-top:10px;">
+      <div style="display:flex; flex-direction:row; gap:40px; padding:60px; flex:1 0 0; border-radius:60px; background:#E0FA8D; align-items:flex-start;">
+        <p style="color:#5B4EFE; font-family:Pretendard,sans-serif; font-size:16px; font-weight:500; line-height:22px; flex-shrink:0; min-width:60px;">문제 01</p>
+        <div>
+          <p style="color:#1B1B1F; font-size:22px; font-weight:700; line-height:150%; margin-bottom:16px;">평균 경쟁력 까지만 보유</p>
+          <p style="color:#41424E; font-size:18px; font-weight:400; line-height:150%;">성인과 유사한 UI는 대부분의 금융 앱이 이미 적용하고 있는 요소로, 차별점이 될 수 없습니다. Fintech 경쟁사와 비슷한 지속 투자도 어렵습니다.</p>
+        </div>
+      </div>
+      <div style="display:flex; flex-direction:row; gap:40px; padding:60px; flex:1 0 0; border-radius:60px; background:#E0FA8D; align-items:flex-start;">
+        <p style="color:#5B4EFE; font-family:Pretendard,sans-serif; font-size:16px; font-weight:500; line-height:22px; flex-shrink:0; min-width:60px;">문제 02</p>
+        <div>
+          <p style="color:#1B1B1F; font-size:22px; font-weight:700; line-height:150%; margin-bottom:16px;">일반적인 이용경험·부족한 기능</p>
+          <p style="color:#41424E; font-size:18px; font-weight:400; line-height:150%;">'부모 간섭'이 느껴지지 않는 금융앱은 이미 시장에 여럿 존재하며, 시중은행의 제약으로 독립적 이용을 지원하는 기능을 제안하기 어려운 상황입니다.</p>
+        </div>
+      </div>
+      <div style="display:flex; flex-direction:row; gap:40px; padding:60px; flex:1 0 0; border-radius:60px; background:#E0FA8D; align-items:flex-start;">
+        <p style="color:#5B4EFE; font-family:Pretendard,sans-serif; font-size:16px; font-weight:500; line-height:22px; flex-shrink:0; min-width:60px;">문제 03</p>
+        <div>
+          <p style="color:#1B1B1F; font-size:22px; font-weight:700; line-height:150%; margin-bottom:16px;">일반적인 이용경험·부족한 기능</p>
+          <p style="color:#41424E; font-size:18px; font-weight:400; line-height:150%;">특정 기능이나 서비스로는 또래문화를 만들거나 관계망을 형성할 수 없습니다. 선점효과와 경쟁하기 가장 어려운 부분은 문화의 형성입니다.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div id="after-cols">
+<!-- ══════════════════════
+     SEC 05 — DISCOVER
+══════════════════════ -->
+<section id="sec-discover" class="sec">
+  <div class="inner">
+    <div class="right-text reveal">
+      <p class="text-label">Discover</p>
+      <h2 class="section-heading">현재 계획된 개선만으로 근본적 이탈을 방지하기에 부족<br>핵심 문제는 기존까지의 역할 위에서 경쟁할 수 없기 때문에 이탈 발생</h2>
+      <p class="section-body">
+        현재 지적되는 UI 불편이나 재미 요소 부족은 이탈의 원인이라기보다 표면적인 현상에 가깝습니다. 실제로 사용자들은 앱이 불편해서 떠나는 것이 아니라, 아이부자를 선택해야 할 이유를 느끼지 못해 이탈하고 있었습니다. 아이부자는 '편리하게 주고받는 용돈생활'을 핵심 가치로 내세우고 있지만, 용돈 수령·사용 중심의 역할에서는 경쟁 서비스 대비 차별화된 경쟁력을 확보하지 못하고 있었습니다. 따라서 문제의 본질은 기능이 아닌 서비스 역할에 있었으며, 기존 역할을 개선하는 것이 아닌 역할 자체를 재정의할 필요가 있었습니다.
+      </p>
+    </div>
+    <div class="two-panels">
+      <div class="reveal reveal-delay-1">
+        <img src="./images/project02/img-02.png" alt="경쟁 포지셔닝 분석" />
+      </div>
+      <div class="reveal reveal-delay-2">
+        <img src="./images/project02/img-03.png" alt="3D 경쟁 포지셔닝" />
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════
+     GRADIENT WRAPPER (Define → Concept)
+══════════════════════ -->
+<div style="background: linear-gradient(180deg, rgba(246, 247, 249, 0.00) 0%, #A9B8FF 100%);">
+
+<!-- ══════════════════════
+     SEC 06 — DEFINE
+══════════════════════ -->
+<section id="sec-define" class="sec">
+  <div class="inner">
+    <div class="right-text reveal">
+      <p class="text-label">Define</p>
+      <h2 class="section-heading">소비 중심의 경쟁을 피해, 하나은행만 할 수 있는 미성년 자산 형성・관리 중심 서비스로 새로운 역할 제안</h2>
+      <p class="section-body">
+        경쟁사를 따라가는 대신, 하나은행만이 제공할 수 있는 미성년 자산 형성·관리 경험을 새로운 기회 영역으로 도출했습니다. 자산가들은 자녀의 소비를 통제하기보다, 어릴 때부터 자산을 직접 형성하고 관리하는 경험을 통해 금융 역량을 키워줍니다. 이는 고액자산가 고객 기반과 금융 전문성을 갖춘 하나은행이 가장 차별화할 수 있는 영역입니다.
+      </p>
+      <p class="define-footnote" style="margin-top:12px; margin-left:0; width:100%;">*하나은행 고객은 4대 시중은행 중 평균 금융자산이 가장 높은 40대 중후반~50대 초반 남녀로, 공격적 투자 성향을 가짐(1억 원 이상 금융자산 비중 최고)<br>- 대한민국 금융소비자보고서 2023, 하나금융경영연구소</p>
+    </div>
+    <div class="single-panel reveal reveal-delay-1">
+      <img src="./images/project02/img-04.png" alt="As-is vs To-be 비교" />
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════
+     SEC 07 — SERVICE CONCEPT
+══════════════════════ -->
+<section id="sec-concept" class="sec">
+  <div class="inner">
+    <div class="concept-text reveal">
+      <p class="text-label" style="text-align:center; color: var(--gray500);">Service Concept</p>
+      <h2 class="concept-title">The Wealth Apprentice</h2>
+      <p class="concept-subtitle">
+        법적 미성년자를 12세 기준 아동・청소년으로 나눠 관리하던 소비 지원 App에서<br>
+        금융 독립 전 사용자의 용돈 소비 - 자산 관리 가이드를 해주는 서비스로
+      </p>
+    </div>
+    <div class="concept-image reveal reveal-delay-1">
+      <img src="./images/project02/img-05.png" alt="서비스 컨셉 이미지" />
+    </div>
+  </div>
+</section>
+
+</div><!-- /gradient wrapper -->
+
+<!-- ══════════════════════
+     SEC 08 — UI CONCEPT 1 (dark)
+══════════════════════ -->
+<section id="sec-ui1" class="sec">
+  <div class="inner">
+    <div class="ui-text reveal">
+      <p class="text-label dark">UI Concept — 많아지고 복잡한 기능 어떻게 해결할까?</p>
+      <h2 class="section-heading light">서비스 방문 목적을 크게 4가지로 구분, 확장 경험을 설계</h2>
+      <p class="section-body light">
+        서비스 방문 목적을 쓰기, 모으기, 투자하기, 자산 관리의 4가지 핵심 행동으로 구분하고, 이를 하단 GNB의 메인 메뉴로 구성하였습니다. 각 페이지는 방문 목적에 집중하는 영역과 목적 달성 후 경험을 확장하는 영역으로 구분하여, 사용자가 원하는 행동은 빠르게 수행하고 이후에는 관련 금융 경험을 자연스럽게 이어갈 수 있도록 설계하였습니다.
+      </p>
+    </div>
+    <div class="cycling-wrap reveal reveal-delay-1">
+      <img id="cycle-img-1" class="cycling-img active" src="./images/project02/img-06-01.png" alt="UI 화면 1" />
+      <img id="cycle-img-2" class="cycling-img" src="./images/project02/img-06-02.png" alt="UI 화면 2" />
+      <img id="cycle-img-3" class="cycling-img" src="./images/project02/img-06-03.png" alt="UI 화면 3" />
+      <img id="cycle-img-4" class="cycling-img" src="./images/project02/img-06-04.png" alt="UI 화면 4" />
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════
+     SEC 09 — UI CONCEPT 2 (dark)
+══════════════════════ -->
+<section id="sec-ui2" class="sec">
+  <div class="inner">
+    <div class="ui-text reveal">
+      <p class="text-label dark">UI Concept — 많아지고 복잡한 기능 어떻게 해결할까?</p>
+      <h2 class="section-heading light">링크를 제공하기 보다 행동을 제안</h2>
+      <p class="section-body light">
+        새로운 아이부자에서는 사용자가 직접 선택하고 고민하는 과정을 최소화하였습니다. 사용자의 데이터를 기반으로 기본 옵션을 먼저 제안하여, 사용자는 확인과 동의만으로 프로세스를 진행할 수 있습니다. 또한 사용자가 필요한 정보를 직접 찾는 것이 아닌, 필요한 정보와 다음 행동을 화면에 먼저 노출하고 시스템이 적절한 제안을 제공하여 사용자의 탐색 부담을 줄이고 행동 중심의 경험을 구현하였습니다.
+      </p>
+    </div>
+    <div class="big-image reveal reveal-delay-1">
+      <img src="./images/project02/img-07.png" alt="부모/자녀 앱 전체 화면" />
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════
+     SEC 10 — SVG 01 (png + confetti)
+══════════════════════ -->
+<section id="sec-svg1" class="sec">
+  <div class="inner">
+    <div class="svg1-scene reveal" id="scene-svg1">
+      <img src="./images/project02/svg-01.png" alt="SVG 01" class="svg1-img" />
+      <canvas class="particle-canvas" id="canvas-svg1"></canvas>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════
+     SEC 11 — SVG 02 (png + confetti)
+══════════════════════ -->
+<section id="sec-svg2" class="sec">
+  <div class="inner">
+    <div class="svg1-scene reveal" id="scene-confetti">
+      <img src="./images/project02/svg-02.png" alt="SVG 02" class="svg1-img" />
+      <canvas class="particle-canvas" id="canvas-confetti"></canvas>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════
+     SEC 12 — FINAL
+══════════════════════ -->
+<section id="sec-final" class="sec">
+  <p class="final-label reveal">The Wealth Apprentice</p>
+  <h2 class="final-heading reveal reveal-delay-1">용돈 받는 서비스에서<br>자산 형성의 첫걸음을 만드는 서비스로</h2>
+  <div class="final-img08-wrap reveal reveal-delay-2">
+    <img src="./images/project02/img-08.png" alt="최종 서비스 화면" />
+    <div class="final-img08-fade"></div>
+  </div>
+
+  <!-- 회고 -->
+  <div class="retro-section reveal">
+    <p class="retro-label">Retrospective</p>
+    <p class="retro-body">이번 프로젝트는 화면을 개선하거나 UI를 변경하는 작업이 아니라, 고객사가 명확하게 정의하지 못했던 문제를 다시 정의하고 서비스의 역할을 재설계하는 과정이었습니다. 기존의 용돈·소비 중심 서비스에서 자산을 모으고 관리하는 경험으로 방향을 전환하며, 아이부자가 지속적으로 선택받기 위해 어떤 역할을 해야 하는지 고민할 수 있었습니다.</p>
+    <p class="retro-body">다만 자체적인 사용자 리서치 없이 기존 데이터를 기반으로 진행했다는 점에서 한계가 있습니다. 이후에는 실제 사용자 검증을 통해 제안한 방향을 확인하고, 사용자의 목소리를 반영해 서비스를 더욱 구체화해 보고 싶습니다.</p>
+  </div>
+</section>
+
+<!-- ══════════════════════
+     SCRIPTS
+══════════════════════ -->
+<script>
+// ── 새로고침 시 최상단으로 ──
+history.scrollRestoration = 'manual';
+window.scrollTo(0, 0);
+
+// ── 0. PROPORTIONAL ZOOM (1920px 기준 비율 축소) ──
+function applyZoom() {
+  document.body.style.zoom = window.innerWidth / 1920;
+}
+applyZoom();
+
+// ── Progress bar ──
+const progressBar = document.getElementById('progress');
+window.addEventListener('scroll', () => {
+  const total = document.documentElement.scrollHeight - innerHeight;
+  progressBar.style.width = (scrollY / total * 100) + '%';
+}, { passive: true });
+
+// ── Nav state ──
+const nav = document.getElementById('nav');
+const darkSections = document.querySelectorAll('#sec-ui1, #sec-ui2, #sec-svg1, #sec-svg2, #sec-final');
+window.addEventListener('scroll', () => {
+  let isDark = false;
+  darkSections.forEach(sec => {
+    const rect = sec.getBoundingClientRect();
+    if (rect.top <= 60 && rect.bottom > 60) isDark = true;
+  });
+  if (isDark) {
+    nav.className = 'dark-nav';
+  } else if (scrollY > 60) {
+    nav.className = 'frosted';
+  } else {
+    nav.className = '';
+  }
+}, { passive: true });
+
+// ── Click! 커스텀 커서 (SVG 씬 위에서만) ──
+(function() {
+  const cursor = document.getElementById('click-cursor');
+  const scenes = document.querySelectorAll('.svg1-scene');
+  let inside = false;
+  const zoom = () => window.innerWidth / 1920;
+
+  document.addEventListener('mousemove', (e) => {
+    if (!inside) return;
+    // zoom 보정: body에 zoom 적용되어 있으므로 실제 픽셀 위치 그대로 사용
+    cursor.style.left = e.clientX + 'px';
+    cursor.style.top  = e.clientY + 'px';
+  });
+
+  scenes.forEach(scene => {
+    scene.addEventListener('mouseenter', () => {
+      inside = true;
+      cursor.classList.add('visible');
+    });
+    scene.addEventListener('mouseleave', () => {
+      inside = false;
+      cursor.classList.remove('visible');
+    });
+  });
+})();
+window.addEventListener('resize', applyZoom);
+
+// ── 1. SCROLL REVEAL ──────────────────────────────
+const revealEls = document.querySelectorAll('.reveal, .reveal-slow');
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.12 });
+revealEls.forEach(el => revealObserver.observe(el));
+
+
+// ── 2. CYCLING IMAGE ─────────────────────────────
+const cycleImages = [
+  document.getElementById('cycle-img-1'),
+  document.getElementById('cycle-img-2'),
+  document.getElementById('cycle-img-3'),
+  document.getElementById('cycle-img-4'),
+];
+let cycleIndex = 0;
+setInterval(() => {
+  cycleImages[cycleIndex].classList.remove('active');
+  cycleIndex = (cycleIndex + 1) % cycleImages.length;
+  cycleImages[cycleIndex].classList.add('active');
+}, 2500);
+
+// ── 3. PARTICLE PHYSICS ──────────────────────────
+function initParticles(canvasId, type) {
+  const canvas = document.getElementById(canvasId);
+  const scene = canvas.parentElement;
+  let particles = [];
+  let animId = null;
+  let triggered = false;
+
+  function resize() {
+    canvas.width = scene.clientWidth;
+    canvas.height = scene.clientHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  function spawnParticles() {
+    particles = [];
+    const cx = canvas.width / 2;
+    const cy = canvas.height * 0.75;
+    const count = type === 'coin' ? 10 : 30;
+
+    for (let i = 0; i < count; i++) {
+      const angle = (Math.random() * Math.PI) - Math.PI; // upward spread
+      const speed = 4 + Math.random() * 6; // 초기 속도 낮춤
+      particles.push({
+        x: cx + (Math.random() - 0.5) * 120,
+        y: cy,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed - 3,
+        rotation: Math.random() * Math.PI * 2,
+        rotSpeed: (Math.random() - 0.5) * 0.15,
+        size: type === 'coin'
+          ? 16 + Math.random() * 14
+          : { w: 16 + Math.random() * 18, h: 26 + Math.random() * 18 }, // confetti 크기 대폭 확대
+        color: type === 'coin'
+          ? null
+          : ['#a78bfa','#c4b5fd','#818cf8','#fbbf24','#f0abfc','#f9a8d4','#34d399','#60a5fa'][Math.floor(Math.random() * 8)],
+        opacity: 1,
+        life: 1,
+      });
+    }
+  }
+
+  function drawCoin(ctx, p) {
+    ctx.save();
+    ctx.translate(p.x, p.y);
+    ctx.rotate(p.rotation);
+    ctx.globalAlpha = p.opacity;
+
+    const r = p.size;
+    const grad = ctx.createRadialGradient(-r*0.3, -r*0.3, r*0.1, 0, 0, r);
+    grad.addColorStop(0, '#e8e8ec');
+    grad.addColorStop(0.4, '#c8c9d4');
+    grad.addColorStop(1, '#9a9baa');
+
+    ctx.beginPath();
+    ctx.ellipse(0, 0, r, r * 0.55, 0, 0, Math.PI * 2);
+    ctx.fillStyle = grad;
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.ellipse(0, 0, r * 0.85, r * 0.45, 0, 0, Math.PI * 2);
+    ctx.strokeStyle = 'rgba(255,255,255,0.4)';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    ctx.restore();
+  }
+
+  function drawRibbon(ctx, p) {
+    ctx.save();
+    ctx.translate(p.x, p.y);
+    ctx.rotate(p.rotation);
+    ctx.globalAlpha = p.opacity;
+
+    ctx.fillStyle = p.color;
+    ctx.beginPath();
+    // wavy ribbon shape
+    ctx.moveTo(-p.size.w / 2, -p.size.h / 2);
+    ctx.quadraticCurveTo(0, 0, p.size.w / 2, p.size.h / 2);
+    ctx.lineTo(p.size.w / 2 - 3, p.size.h / 2);
+    ctx.quadraticCurveTo(-3, 0, -p.size.w / 2 + 3, -p.size.h / 2);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.restore();
+  }
+
+  function animate() {
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    let alive = false;
+    for (const p of particles) {
+      p.vy += 0.18; // gravity 낮춤 → 천천히 낙하
+      p.x += p.vx;
+      p.y += p.vy;
+      p.rotation += p.rotSpeed;
+      p.vx *= 0.98; // air resistance
+      p.opacity = Math.max(0, 1 - (p.y / (canvas.height * 2.0))); // 더 오래 유지
+
+      if (p.y < canvas.height + 60) {
+        alive = true;
+        type === 'coin' ? drawCoin(ctx, p) : drawRibbon(ctx, p);
+      }
+    }
+
+    if (alive) {
+      animId = requestAnimationFrame(animate);
+    } else {
+      animId = null;
+    }
+  }
+
+  // Trigger on scroll into view (re-triggers each time section enters viewport)
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting && !triggered) {
+        triggered = true;
+        spawnParticles();
+        if (animId) cancelAnimationFrame(animId);
+        animate();
+        setTimeout(() => { triggered = false; }, 2500);
+      }
+    });
+  }, { threshold: 0.3 });
+  observer.observe(scene);
+
+  // Re-trigger on click
+  scene.addEventListener('click', () => {
+    if (animId) cancelAnimationFrame(animId);
+    spawnParticles();
+    animate();
+  });
+}
+
+initParticles('canvas-svg1', 'coin');
+initParticles('canvas-confetti', 'confetti');
+
+// ── img01-03 완료 후 이후 섹션 공개 ──────────────
+(function() {
+  const img03 = document.getElementById('img01-wrap-3');
+  const afterCols = document.getElementById('after-cols');
+  if (!img03 || !afterCols) return;
+
+  const observer = new MutationObserver(() => {
+    if (img03.classList.contains('visible')) {
+      // 1.2s(delay) + 2.4s(transition) 후 공개
+      setTimeout(() => afterCols.classList.add('visible'), 1000);
+      observer.disconnect();
+    }
+  });
+  observer.observe(img03, { attributes: true, attributeFilter: ['class'] });
+})();
+</script>
+
+</div><!-- /after-cols -->
+
+<!-- ══════════════════════════════════════
+     PROJECT NAVIGATION
+══════════════════════════════════════ -->
+<div class="proj-nav-section">
+  <a class="proj-nav-card" href="./portfolio-01-hana-ibuja.html">
+    <span class="proj-nav-dir">← Prev Project</span>
+    <p class="proj-nav-title">AI &amp; UX Workflow<br>for ibuja</p>
+  </a>
+  <a class="proj-nav-card next" href="./portfolio-03-kb-pension.html">
+    <span class="proj-nav-dir">Next Project →</span>
+    <p class="proj-nav-title">퇴직연금 비대면<br>채널 혁신 추진</p>
+  </a>
+</div>
+
+<footer>
+  <div class="ft-left">
+    <p class="ft-name">이아현 — UX Designer &amp; Consultant</p>
+    <p>하나은행 아이부자 UX 컨설팅 · 2026. 03 — 2026. 06</p>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2026 Ahhyun UX Portfolio</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+  <style>
+    :root {
+      --bg: #f7f7f5;
+      --dark: #111111;
+      --mid: #888888;
+      --light: #e4e4e0;
+      --font: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', sans-serif;
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    /* ── EMOJI BURST ── */
+    .emoji-burst {
+      position: fixed;
+      pointer-events: none;
+      z-index: 9998;
+      font-size: 38px;
+      line-height: 1;
+      transform-origin: center;
+      will-change: transform, opacity;
+      user-select: none;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--dark);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* ── CUSTOM CURSOR ── */
+    #hero { cursor: none; }
+    #cursor {
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    #cursor.visible { opacity: 1; }
+    .cursor-text {
+      white-space: nowrap;
+      font-family: var(--font);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      color: var(--dark);
+      background: var(--bg);
+      border: 1px solid rgba(0,0,0,0.12);
+      padding: 6px 12px;
+      border-radius: 100px;
+      transition: opacity 0.15s;
+    }
+    .cursor-emoji {
+      font-size: 32px;
+      line-height: 1;
+      display: none;
+      transition: opacity 0.15s;
+    }
+    #cursor.on-hello .cursor-text  { display: none; }
+    #cursor.on-hello .cursor-emoji { display: block; }
+
+    /* ── HERO ── */
+    #hero {
+      position: relative;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .site-name {
+      position: absolute;
+      top: 40px;
+      left: 28px;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.01em;
+      color: var(--dark);
+    }
+
+    .hero-projects-btn {
+      position: absolute;
+      top: 34px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--dark);
+      text-decoration: none;
+      border: 1px solid rgba(0,0,0,0.2);
+      padding: 7px 20px;
+      border-radius: 100px;
+      background: transparent;
+      transition: background 0.2s, color 0.2s, border-color 0.2s;
+      white-space: nowrap;
+    }
+    .hero-projects-btn:hover {
+      background: var(--dark);
+      color: var(--bg);
+      border-color: var(--dark);
+    }
+
+    /* canvas wrapper: controls visible area (clips overflow) */
+    #hello-wrap {
+      width: 88vw;
+      max-width: 1100px;
+      height: 260px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      will-change: transform;
+    }
+    /* canvas is intentionally taller than wrapper — gives lens room */
+    #hello-canvas {
+      display: block;
+      width: 100%;
+      flex-shrink: 0;
+      height: auto;
+    }
+
+    .scroll-hint {
+      position: absolute;
+      bottom: 44px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--mid);
+    }
+    .scroll-hint::after {
+      content: '';
+      width: 1px;
+      height: 36px;
+      background: var(--mid);
+      transform-origin: top;
+      animation: scrollLine 2s ease-in-out infinite;
+    }
+    @keyframes scrollLine {
+      0%   { opacity: 0; transform: scaleY(0); }
+      40%  { opacity: 1; transform: scaleY(1); }
+      100% { opacity: 0; transform: scaleY(1); }
+    }
+
+    /* ── ABOUT ── */
+    #about {
+      padding: 140px 28px 100px;
+      max-width: 1440px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--mid);
+      margin-bottom: 40px;
+    }
+
+    .intro-text {
+      font-size: 30px;
+      font-weight: 500;
+      line-height: 1.55;
+      letter-spacing: -0.025em;
+      color: var(--dark);
+      max-width: 720px;
+    }
+
+    /* ── WORK ── */
+    #experience {
+      padding: 0 28px 100px;
+      max-width: 1440px;
+      margin: 0 auto;
+    }
+
+    .career-item {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 0 48px;
+      padding: 18px 0;
+      align-items: start;
+    }
+    .career-period {
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--mid);
+      font-feature-settings: 'tnum';
+      letter-spacing: 0.01em;
+      padding-top: 3px;
+    }
+    .career-org {
+      font-size: 18px;
+      font-weight: 500;
+      color: var(--dark);
+      letter-spacing: -0.02em;
+      line-height: 1.3;
+      margin-bottom: 4px;
+    }
+    .career-role {
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--mid);
+    }
+
+    /* ── PROJECT EXPERIENCE ── */
+    #proj-exp {
+      padding: 0 28px 100px;
+      max-width: 1440px;
+      margin: 0 auto;
+    }
+
+    .pexp-item {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 0 48px;
+      padding: 18px 0;
+      align-items: start;
+    }
+    .pexp-year {
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--mid);
+      font-feature-settings: 'tnum';
+      padding-top: 3px;
+    }
+    .pexp-client {
+      font-size: 18px;
+      font-weight: 500;
+      color: var(--dark);
+      letter-spacing: -0.02em;
+      line-height: 1.3;
+      margin-bottom: 4px;
+    }
+    .pexp-name {
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--mid);
+      line-height: 1.5;
+    }
+    .pexp-sub {
+      margin-top: 7px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .pexp-sub-item {
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--mid);
+      line-height: 1.5;
+    }
+    .pexp-sub-item::before {
+      content: '— ';
+      opacity: 0.5;
+    }
+
+    /* ── PUBLICATIONS ── */
+    #publications {
+      padding: 0 28px 100px;
+      max-width: 1440px;
+      margin: 0 auto;
+    }
+
+    .pub-item {
+      display: grid;
+      grid-template-columns: 220px 1fr auto;
+      gap: 0 48px;
+      padding: 18px 0;
+      align-items: start;
+    }
+    .pub-date {
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--mid);
+      font-feature-settings: 'tnum';
+      padding-top: 3px;
+      line-height: 1.5;
+    }
+    .pub-title {
+      font-size: 17px;
+      font-weight: 500;
+      color: var(--dark);
+      letter-spacing: -0.015em;
+      line-height: 1.45;
+      margin-bottom: 4px;
+    }
+    .pub-meta {
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--mid);
+    }
+    .pub-badges {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 4px;
+      padding-top: 3px;
+    }
+    .pub-index {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: var(--mid);
+      border: 1px solid var(--light);
+      padding: 2px 8px;
+      border-radius: 100px;
+    }
+
+    /* ── PROJECTS (card grid) ── */
+    #projects {
+      padding: 0 28px 160px;
+      max-width: 1440px;
+      margin: 0 auto;
+    }
+
+    .proj-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 32px;
+    }
+
+    .proj-card {
+      position: relative;
+      background: var(--dark);
+      padding: 48px 44px;
+      min-height: 300px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      text-decoration: none;
+      color: #fff;
+      overflow: hidden;
+      border-radius: 40px;
+      transition: background 0.35s;
+    }
+    .proj-card::after {
+      content: '→';
+      position: absolute;
+      bottom: 48px;
+      right: 44px;
+      font-size: 18px;
+      opacity: 0;
+      transform: translateX(-6px);
+      transition: opacity 0.25s, transform 0.25s;
+    }
+    .proj-card:hover::after { opacity: 1; transform: translateX(0); }
+    .proj-card:hover { background: #1e1e1e; }
+
+    .proj-card.placeholder {
+      background: var(--light);
+      color: var(--mid);
+      cursor: default;
+    }
+    .proj-card.placeholder:hover { background: var(--light); }
+    .proj-card.placeholder::after { display: none; }
+
+    .proj-num {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      opacity: 0.4;
+    }
+    .proj-card.placeholder .proj-num { opacity: 0.6; }
+
+    .proj-title {
+      font-size: 22px;
+      font-weight: 700;
+      line-height: 1.3;
+      letter-spacing: -0.02em;
+    }
+    .proj-card.placeholder .proj-title {
+      font-size: 16px;
+      font-weight: 400;
+      opacity: 0.4;
+    }
+    .proj-meta {
+      font-size: 12px;
+      font-weight: 400;
+      opacity: 0.45;
+      margin-top: 10px;
+      line-height: 1.5;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 32px 28px;
+      border-top: 1px solid var(--light);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .ft-name { font-size: 13px; font-weight: 500; color: var(--mid); }
+    .ft-right { font-size: 12px; color: var(--mid); }
+
+    /* ── REVEAL ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.8s cubic-bezier(.16,1,.3,1), transform 0.8s cubic-bezier(.16,1,.3,1);
+    }
+    .reveal.in { opacity: 1; transform: none; }
+    .delay-1 { transition-delay: 0.1s; }
+    .delay-2 { transition-delay: 0.22s; }
+    .delay-3 { transition-delay: 0.34s; }
+    .delay-4 { transition-delay: 0.46s; }
+  </style>
+</head>
+<body>
+
+<div id="cursor">
+  <div class="cursor-text" id="cursor-label">I'm Product Designer Ahhyun!</div>
+  <div class="cursor-emoji" id="cursor-emoji">👋</div>
+</div>
+
+<!-- ══════════════════════════════════════
+     HERO
+══════════════════════════════════════ -->
+<section id="hero">
+  <div class="site-name">2026 Ahhyun UX Portfolio</div>
+
+  <a class="hero-projects-btn" href="#projects">Projects ↓</a>
+
+  <div id="hello-wrap">
+    <canvas id="hello-canvas"></canvas>
+  </div>
+
+  <div class="scroll-hint">scroll</div>
+</section>
+
+<!-- ══════════════════════════════════════
+     ABOUT
+══════════════════════════════════════ -->
+<section id="about">
+  <p class="section-label reveal">About</p>
+  <p class="intro-text reveal delay-1">
+    리서치부터 전략, 디자인까지<br>
+    전 과정에 참여하는 Product Designer입니다.
+  </p>
+</section>
+
+<!-- ══════════════════════════════════════
+     WORK
+══════════════════════════════════════ -->
+<section id="experience">
+  <p class="section-label reveal">Experience</p>
+
+  <div class="career-list">
+    <div class="career-item reveal">
+      <span class="career-period">2025. 04 — 현재</span>
+      <div>
+        <p class="career-org">바이널씨</p>
+        <p class="career-role">UX 컨설턴트</p>
+      </div>
+    </div>
+    <div class="career-item reveal delay-1">
+      <span class="career-period">2024. 05 — 2025. 12</span>
+      <div>
+        <p class="career-org">홍익대학교 서비스디자인경험연구소</p>
+        <p class="career-role">선임연구원</p>
+      </div>
+    </div>
+    <div class="career-item reveal delay-2">
+      <span class="career-period">2022. 03 — 2024. 02</span>
+      <div>
+        <p class="career-org">홍익대학교 IDAS</p>
+        <p class="career-role">디지털미디어디자인 석사</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     PROJECT EXPERIENCE
+══════════════════════════════════════ -->
+<section id="proj-exp">
+  <p class="section-label reveal">Project Experience</p>
+
+  <div class="pexp-list">
+
+    <div class="pexp-item reveal">
+      <span class="pexp-year">2026. 03 — 2026. 06</span>
+      <div>
+        <p class="pexp-client">하나은행 아이부자</p>
+        <p class="pexp-name">아이부자 UX 컨설팅</p>
+      </div>
+    </div>
+
+    <div class="pexp-item reveal">
+      <span class="pexp-year">2026. 01 — 2026. 03</span>
+      <div>
+        <p class="pexp-client">KB국민은행</p>
+        <p class="pexp-name">퇴직연금 비대면 채널 혁신 추진 컨설팅</p>
+      </div>
+    </div>
+
+    <div class="pexp-item reveal">
+      <span class="pexp-year">2025. 05 — 2025. 12</span>
+      <div>
+        <p class="pexp-client">KB국민은행</p>
+        <p class="pexp-name">컨설팅 운영 프로젝트</p>
+        <div class="pexp-sub">
+          <span class="pexp-sub-item">중고차 서비스 KB차차차 앱 개선안 검증 (UT 6명)</span>
+          <span class="pexp-sub-item">송금/이체 UX라이팅 인식 조사 (온라인 설문 700명)</span>
+          <span class="pexp-sub-item">KB스타뱅킹 전체메뉴 개선안 검증 조사 (온라인 설문 / FCT 300명)</span>
+          <span class="pexp-sub-item">개인사업자 세무 관련 심층인터뷰 (8명)</span>
+          <span class="pexp-sub-item">경리 대상 ERP프로그램 이용 경험 조사 (심층인터뷰 6명)</span>
+          <span class="pexp-sub-item">BaaS형 금융솔루션 심층인터뷰 (8명)</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="pexp-item reveal">
+      <span class="pexp-year">2025. 04</span>
+      <div>
+        <p class="pexp-client">현대자동차</p>
+        <p class="pexp-name">Entry/Exit 사용자 리서치 제안 리딩</p>
+      </div>
+    </div>
+
+    <div class="pexp-item reveal">
+      <span class="pexp-year">2024. 08 — 2024. 10</span>
+      <div>
+        <p class="pexp-client">여수세계박람회장</p>
+        <p class="pexp-name">안내·안전 사인 체계 개선 사업</p>
+      </div>
+    </div>
+
+    <div class="pexp-item reveal">
+      <span class="pexp-year">2024. 06 — 2024. 12</span>
+      <div>
+        <p class="pexp-client">디자인진흥원</p>
+        <p class="pexp-name">지속가능디자인지원사업 서비스 디자인 컨설팅</p>
+      </div>
+    </div>
+
+    <div class="pexp-item reveal">
+      <span class="pexp-year">2024. 05 — 2025. 07</span>
+      <div>
+        <p class="pexp-client">한국연구재단</p>
+        <p class="pexp-name">신진연구자지원사업 Z세대 버추얼 휴먼 연구</p>
+      </div>
+    </div>
+
+    <div class="pexp-item reveal">
+      <span class="pexp-year">2024. 01 — 2024. 07</span>
+      <div>
+        <p class="pexp-client">국립순천대학교</p>
+        <p class="pexp-name">캠퍼스 안전인프라 제작설치 사업</p>
+      </div>
+    </div>
+
+    <div class="pexp-item reveal">
+      <span class="pexp-year">2023. 08 — 2023. 09</span>
+      <div>
+        <p class="pexp-client">덧셈</p>
+        <p class="pexp-name">세금 환급 서비스 MVP 서비스 출시</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     PUBLICATIONS
+══════════════════════════════════════ -->
+<section id="publications">
+  <p class="section-label reveal">Publications</p>
+
+  <div class="pub-list">
+
+    <div class="pub-item reveal">
+      <span class="pub-date">2025. 08</span>
+      <div>
+        <p class="pub-title">피지털 경험 요인에 따른 디지털 휴먼 페르소나 설계 전략: 가상성과 상호작용성을 중심으로</p>
+        <p class="pub-meta">단독 1저자 · 한국디자인학회 (ADR)</p>
+      </div>
+      <div class="pub-badges"><span class="pub-index">SCOPUS</span></div>
+    </div>
+
+    <div class="pub-item reveal">
+      <span class="pub-date">2024. 08</span>
+      <div>
+        <p class="pub-title">멀티모달 청사진 기반 DX 박물관 전략 연구: Z세대를 중심으로</p>
+        <p class="pub-meta">제 1저자 · 한국디자인학회 (ADR)</p>
+      </div>
+      <div class="pub-badges"><span class="pub-index">SCOPUS</span></div>
+    </div>
+
+    <div class="pub-item reveal">
+      <span class="pub-date">2023. 08</span>
+      <div>
+        <p class="pub-title">Z세대 금융 마이데이터 인식 제고를 위한 사용자 경험 연구</p>
+        <p class="pub-meta">제 1저자 · 차세대컨버전스정보기술논문지 (JNCIST)</p>
+      </div>
+      <div class="pub-badges"><span class="pub-index">KCI</span></div>
+    </div>
+
+    <div class="pub-item reveal">
+      <span class="pub-date">2022. 12</span>
+      <div>
+        <p class="pub-title">A Study on the User Experience to Improve Immersion as a Digital Human in Lifestyle Content</p>
+        <p class="pub-meta">제 5저자 · MDPI</p>
+      </div>
+      <div class="pub-badges"><span class="pub-index">SCI</span></div>
+    </div>
+
+    <div class="pub-item reveal">
+      <span class="pub-date">2022. 12</span>
+      <div>
+        <p class="pub-title">웹툰 기반 UI애니메이션에 따른 사용자 경험 연구: 네이버 웹툰과 카카오 웹툰을 중심으로</p>
+        <p class="pub-meta">제 1저자 · 차세대컨버전스정보기술논문지 (JNCIST)</p>
+      </div>
+      <div class="pub-badges"><span class="pub-index">KCI</span></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     PROJECTS
+══════════════════════════════════════ -->
+<section id="projects">
+  <p class="section-label reveal">Projects</p>
+
+  <div class="proj-grid">
+    <a class="proj-card reveal" href="./portfolio-01-hana-ibuja.html">
+      <p class="proj-num">Project 01</p>
+      <div>
+        <p class="proj-title">AI &amp; UX Workflow<br>for ibuja</p>
+        <p class="proj-meta">하나은행 아이부자 · 2026. 03 — 2026. 06</p>
+      </div>
+    </a>
+
+    <a class="proj-card reveal delay-1" href="./portfolio-02-ibuja.html">
+      <p class="proj-num">Project 02</p>
+      <div>
+        <p class="proj-title">아이부자 서비스의<br>새로운 역할 정의</p>
+        <p class="proj-meta">하나은행 아이부자 UX 컨설팅 · 2026. 03 — 2026. 06</p>
+      </div>
+    </a>
+
+    <a class="proj-card reveal delay-2" href="./portfolio-03-kb-pension.html">
+      <p class="proj-num">Project 03</p>
+      <div>
+        <p class="proj-title">KB국민은행 퇴직연금<br>UX 컨설팅</p>
+        <p class="proj-meta">KB국민은행 퇴직연금 UX 컨설팅 · 2026. 01 — 2026. 03</p>
+      </div>
+    </a>
+
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     FOOTER
+══════════════════════════════════════ -->
+<footer>
+  <p class="ft-name">이아현 — UX Designer &amp; Consultant</p>
+  <p class="ft-right">2026 Ahhyun UX Portfolio</p>
+</footer>
+
+<script>
+  history.scrollRestoration = 'manual';
+  window.scrollTo(0, 0);
+
+  /* ── Convex lens distortion (canvas pixel-level) ── */
+  const BG   = '#f7f7f5';
+  const W    = 1800;
+  const H    = 920;    // text at y=510, LENS=400 → max y=910 < 920 ✓
+  const LENS = 400;    // visual radius ≈ 244px CSS — big & visible
+  const LENS2 = LENS * LENS;
+
+  const wrap = document.getElementById('hello-wrap');
+  const cnv  = document.getElementById('hello-canvas');
+  cnv.width  = W;
+  cnv.height = H;
+  const ctx  = cnv.getContext('2d');
+
+  /* offscreen source (static text, rendered once) */
+  const src  = document.createElement('canvas');
+  src.width  = W;
+  src.height = H;
+  const sCtx = src.getContext('2d');
+  let srcPx  = null;
+
+  async function buildSource() {
+    await document.fonts.load('600 260px "Poppins"').catch(() => {});
+    await document.fonts.ready;
+    sCtx.fillStyle = BG;
+    sCtx.fillRect(0, 0, W, H);
+    sCtx.fillStyle    = '#111111';
+    sCtx.font         = '600 260px "Poppins", system-ui, sans-serif';
+    sCtx.textAlign    = 'center';
+    sCtx.textBaseline = 'alphabetic';
+    if ('letterSpacing' in sCtx) sCtx.letterSpacing = '8px';
+    sCtx.fillText('-hello.', W / 2, 510);
+    srcPx = sCtx.getImageData(0, 0, W, H).data;
+    ctx.drawImage(src, 0, 0);  // show immediately
+  }
+  buildSource();
+
+  /* mouse tracking — two coordinate spaces */
+  let vpX = window.innerWidth  / 2;   // viewport coords for parallax
+  let vpY = window.innerHeight / 2;
+  let cnvX = -LENS * 3, cnvY = H / 2; // canvas pixel coords for lens
+  let curCnvX = cnvX, curCnvY = cnvY;
+  let curParX = 0, curParY = 0;
+
+  /* custom cursor */
+  const cursorEl = document.getElementById('cursor');
+  let cursorCx = 0, cursorCy = 0;
+  let cursorTx = 0, cursorTy = 0;
+
+  document.addEventListener('mousemove', e => {
+    vpX = e.clientX;
+    vpY = e.clientY;
+    cursorTx = e.clientX;
+    cursorTy = e.clientY;
+    const r = cnv.getBoundingClientRect();
+    cnvX = (e.clientX - r.left) * W / r.width;
+    cnvY = (e.clientY - r.top)  * H / r.height;
+  });
+  const heroEl2 = document.getElementById('hero');
+  heroEl2.addEventListener('mouseenter', () => cursorEl.classList.add('visible'));
+  heroEl2.addEventListener('mouseleave', () => {
+    cursorEl.classList.remove('visible');
+    cnvX = -LENS * 6;
+  });
+
+  const helloWrapEl = document.getElementById('hello-wrap');
+  helloWrapEl.addEventListener('mouseenter', () => cursorEl.classList.add('on-hello'));
+  helloWrapEl.addEventListener('mouseleave', () => cursorEl.classList.remove('on-hello'));
+
+  const projectsBtnEl = document.querySelector('.hero-projects-btn');
+  projectsBtnEl.addEventListener('mouseenter', () => cursorEl.classList.remove('visible'));
+  projectsBtnEl.addEventListener('mouseleave', () => cursorEl.classList.add('visible'));
+
+  /* render loop */
+  (function tick() {
+    /* lerp lens position */
+    curCnvX += (cnvX - curCnvX) * 0.11;
+    curCnvY += (cnvY - curCnvY) * 0.11;
+
+    /* lerp custom cursor */
+    cursorCx += (cursorTx - cursorCx) * 0.18;
+    cursorCy += (cursorTy - cursorCy) * 0.18;
+    cursorEl.style.left = cursorCx.toFixed(1) + 'px';
+    cursorEl.style.top  = cursorCy.toFixed(1) + 'px';
+
+    /* lerp parallax offset (wrapper moves slightly with mouse) */
+    const tarParX = (vpX / window.innerWidth  - 0.5) * 80;
+    const tarParY = (vpY / window.innerHeight - 0.5) * 40;
+    curParX += (tarParX - curParX) * 0.07;
+    curParY += (tarParY - curParY) * 0.07;
+    wrap.style.transform = `translate(${curParX.toFixed(2)}px, ${curParY.toFixed(2)}px)`;
+
+    if (srcPx) {
+      ctx.drawImage(src, 0, 0);
+
+      const mx = curCnvX, my = curCnvY;
+      const x0 = Math.max(0, Math.floor(mx - LENS));
+      const x1 = Math.min(W - 1, Math.ceil(mx + LENS));
+      const y0 = Math.max(0, Math.floor(my - LENS));
+      const y1 = Math.min(H - 1, Math.ceil(my + LENS));
+      const pw = x1 - x0 + 1;
+      const ph = y1 - y0 + 1;
+
+      /* distance from cursor to canvas text center → scale lens strength */
+      const textCx = W / 2, textCy = 510;
+      const dxC = curCnvX - textCx, dyC = curCnvY - textCy;
+      const distToText = Math.sqrt(dxC * dxC + dyC * dyC);
+      const MAX_DIST   = 2000;  // large influence radius
+      const proximity  = Math.max(0, 1 - distToText / MAX_DIST);
+      const activeLens = LENS * (0.25 + 0.75 * proximity);  // min 25% = 150px even far away
+      const activeLens2 = activeLens * activeLens;
+
+      const ax0 = Math.max(0, Math.floor(mx - activeLens));
+      const ax1 = Math.min(W - 1, Math.ceil(mx + activeLens));
+      const ay0 = Math.max(0, Math.floor(my - activeLens));
+      const ay1 = Math.min(H - 1, Math.ceil(my + activeLens));
+      const apw = ax1 - ax0 + 1;
+      const aph = ay1 - ay0 + 1;
+
+      if (apw > 0 && aph > 0) {
+        const out = new Uint8ClampedArray(apw * aph * 4);
+
+        for (let py = 0; py < aph; py++) {
+          for (let px = 0; px < apw; px++) {
+            const x  = ax0 + px;
+            const y  = ay0 + py;
+            const dx = x - mx;
+            const dy = y - my;
+            const d2 = dx * dx + dy * dy;
+
+            let sx = x, sy = y;
+
+            if (d2 < activeLens2 && d2 > 0.25) {
+              const d  = Math.sqrt(d2);
+              const t  = d / activeLens;
+              /* Spherical convex lens: max ~6× magnification at center, 1× at edge.
+                 st = 0.17 + 0.83*t² → st ∈ [0.17, 1], mag = t/st ∈ [1, ~5.9×] */
+              const st = 0.17 + 0.83 * t * t;
+              sx = (mx + (dx / d) * st * activeLens + 0.5) | 0;
+              sy = (my + (dy / d) * st * activeLens + 0.5) | 0;
+              /* out-of-bounds → background color (no smear at edges) */
+              if (sx < 0 || sx >= W || sy < 0 || sy >= H) {
+                const di = (py * apw + px) << 2;
+                out[di] = 0xf7; out[di+1] = 0xf7; out[di+2] = 0xf5; out[di+3] = 255;
+                continue;
+              }
+            }
+
+            const si = (sy * W + sx) << 2;
+            const di = (py * apw + px) << 2;
+            out[di]     = srcPx[si];
+            out[di + 1] = srcPx[si + 1];
+            out[di + 2] = srcPx[si + 2];
+            out[di + 3] = srcPx[si + 3];
+          }
+        }
+
+        ctx.putImageData(new ImageData(out, apw, aph), ax0, ay0);
+      }
+    }
+
+    requestAnimationFrame(tick);
+  })();
+
+  /* ── Emoji burst — physics-based arc (throw up, gravity pulls down) ── */
+  const EMOJIS = ['🖐️', '👋', '🤚'];
+  const GRAVITY = 0.22;   // px/frame²
+  const LIFE    = 180;    // frames before full fade (~3s at 60fps)
+
+  function spawnEmoji(x, y) {
+    const el = document.createElement('span');
+    el.className = 'emoji-burst';
+    el.textContent = EMOJIS[Math.floor(Math.random() * EMOJIS.length)];
+    el.style.left = x + 'px';
+    el.style.top  = y + 'px';
+    document.body.appendChild(el);
+
+    // Initial velocity: random horizontal, strong upward
+    const vx  = (Math.random() - 0.5) * 5;    // ±2.5px/frame horizontal
+    const vy  = -(8 + Math.random() * 4);     // 8–12px/frame upward
+    const rot = (Math.random() - 0.5) * 2.5; // spin speed deg/frame
+
+    let cx = 0, cy = 0, angle = 0, frame = 0;
+    let curVy = vy;
+
+    function step() {
+      cx     += vx;
+      curVy  += GRAVITY;
+      cy     += curVy;
+      angle  += rot;
+      frame++;
+
+      const opacity = Math.max(0, 1 - frame / LIFE);
+      const scale   = 0.5 + Math.min(1, frame / 12) * 0.6; // pop up quickly
+
+      el.style.transform = `translate(${cx.toFixed(1)}px, ${cy.toFixed(1)}px) rotate(${angle.toFixed(1)}deg) scale(${scale.toFixed(2)})`;
+      el.style.opacity   = opacity.toFixed(3);
+
+      if (opacity > 0) {
+        requestAnimationFrame(step);
+      } else {
+        el.remove();
+      }
+    }
+    requestAnimationFrame(step);
+  }
+
+  document.getElementById('hello-wrap').addEventListener('click', e => {
+    const count = 1 + Math.floor(Math.random() * 3);
+    for (let i = 0; i < count; i++) {
+      // stagger spawns slightly so they don't all start at identical velocity
+      setTimeout(() => spawnEmoji(e.clientX, e.clientY), i * 60);
+    }
+  });
+
+  /* ── Scroll reveal ── */
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(el => {
+      if (el.isIntersecting) {
+        el.target.classList.add('in');
+        observer.unobserve(el.target);
+      }
+    });
+  }, { threshold: 0.15 });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
