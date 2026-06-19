@@ -246,7 +246,6 @@
       color: var(--gray500); line-height: 1.75;
       letter-spacing: -.02em;
     }
-    /* goal-grid: 3 rows × 2 cols so each stat row shares height with its circle */
     .goal-grid {
       display: grid;
       grid-template-columns: 1fr 220px;
@@ -277,7 +276,6 @@
       color: var(--white); line-height: 1.5;
     }
     .stat-desc u { text-decoration: underline; }
-    /* Circle cell — fills the same grid row as its stat-row */
     .circle-cell {
       display: flex; flex-direction: column;
       align-items: center; justify-content: center;
@@ -326,14 +324,13 @@
     ══════════════════════════════════════ */
     .content-section {
       width: 1920px;
-      padding: 250px 80px;
+      padding: 120px 80px;
       background: var(--gray50);
       position: relative;
     }
-    .content-section.alt { background: var(--gray50); }
+    .content-section.alt { background: var(--white); }
     .content-section.dark {
       background: var(--dark);
-      box-shadow: 0 0 0 9999px var(--dark);
     }
     .content-header {
       max-width: 1040px;
@@ -476,8 +473,6 @@
   <span class="nav-title">UX Consulting</span>
   <a class="nav-back" href="./index.html">← Home</a>
 </nav>
-
-<!-- ── BOTTOM LNB ── -->
 
 <!-- ══════════════════════════════════════
      HERO
@@ -735,9 +730,6 @@
   <div class="ft-left">
     <p class="ft-name">이아현 — UX Designer &amp; Consultant</p>
     <p>KB국민은행 퇴직연금 비대면 채널 혁신추진 컨설팅 · 2026. 01 — 2026. 03</p>
-  </div>
-  <div class="ft-right" style="font-size:13px;">
-    <p>This portfolio was built with Claude Code by Anthropic</p>
   </div>
 </footer>
 

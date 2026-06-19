@@ -114,7 +114,6 @@
       border-color: var(--dark);
     }
 
-    /* canvas wrapper: controls visible area (clips overflow) */
     #hello-wrap {
       width: 88vw;
       max-width: 1100px;
@@ -125,7 +124,6 @@
       justify-content: center;
       will-change: transform;
     }
-    /* canvas is intentionally taller than wrapper — gives lens room */
     #hello-canvas {
       display: block;
       width: 100%;
@@ -424,19 +422,6 @@
       line-height: 1.5;
     }
 
-    /* ── CONTACT ── */
-    #contact {
-      padding: 120px 28px;
-      border-top: 1px solid var(--light);
-    }
-    .contact-label { font-size: 11px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--mid); margin-bottom: 32px; }
-    .contact-heading { font-size: 48px; font-weight: 700; color: var(--dark); letter-spacing: -.03em; line-height: 1.2; margin-bottom: 48px; max-width: 600px; }
-    .contact-links { display: flex; flex-direction: column; gap: 16px; }
-    .contact-item { display: flex; align-items: center; gap: 16px; }
-    .contact-item-label { font-size: 13px; font-weight: 600; color: var(--mid); width: 60px; flex-shrink: 0; }
-    .contact-item-value { font-size: 18px; font-weight: 500; color: var(--dark); text-decoration: none; }
-    .contact-item-value:hover { color: var(--accent); }
-
     /* ── FOOTER ── */
     footer {
       padding: 32px 28px;
@@ -527,7 +512,7 @@
     리서치부터 전략, 디자인까지<br>
     전 과정에 참여하는 Product Designer입니다.
   </p>
-
+  <a class="resume-btn reveal delay-2" href="resume.html">경력기술서 보기 →</a>
 </section>
 
 <!-- ══════════════════════════════════════
@@ -743,23 +728,6 @@
 </section>
 
 <!-- ══════════════════════════════════════
-     CONTACT
-══════════════════════════════════════ -->
-<section id="contact">
-  <p class="contact-label reveal">Contact</p>
-<div class="contact-links reveal delay-2">
-    <div class="contact-item">
-      <span class="contact-item-label">Phone</span>
-      <a class="contact-item-value" href="tel:+821051766386">+82) 10-5176-6386</a>
-    </div>
-    <div class="contact-item">
-      <span class="contact-item-label">Email</span>
-      <a class="contact-item-value" href="mailto:ahyun98@naver.com">ahyun98@naver.com</a>
-    </div>
-  </div>
-</section>
-
-<!-- ══════════════════════════════════════
      FOOTER
 ══════════════════════════════════════ -->
 <footer>
@@ -771,11 +739,10 @@
   history.scrollRestoration = 'manual';
   window.scrollTo(0, 0);
 
-  /* ── Convex lens distortion (canvas pixel-level) ── */
   const BG   = '#f7f7f5';
   const W    = 1800;
-  const H    = 920;    // text at y=510, LENS=400 → max y=910 < 920 ✓
-  const LENS = 400;    // visual radius ≈ 244px CSS — big & visible
+  const H    = 920;
+  const LENS = 400;
   const LENS2 = LENS * LENS;
 
   const wrap = document.getElementById('hello-wrap');
@@ -784,7 +751,6 @@
   cnv.height = H;
   const ctx  = cnv.getContext('2d');
 
-  /* offscreen source (static text, rendered once) */
   const src  = document.createElement('canvas');
   src.width  = W;
   src.height = H;
@@ -803,18 +769,16 @@
     if ('letterSpacing' in sCtx) sCtx.letterSpacing = '8px';
     sCtx.fillText('-hello.', W / 2, 510);
     srcPx = sCtx.getImageData(0, 0, W, H).data;
-    ctx.drawImage(src, 0, 0);  // show immediately
+    ctx.drawImage(src, 0, 0);
   }
   buildSource();
 
-  /* mouse tracking — two coordinate spaces */
-  let vpX = window.innerWidth  / 2;   // viewport coords for parallax
+  let vpX = window.innerWidth  / 2;
   let vpY = window.innerHeight / 2;
-  let cnvX = -LENS * 3, cnvY = H / 2; // canvas pixel coords for lens
+  let cnvX = -LENS * 3, cnvY = H / 2;
   let curCnvX = cnvX, curCnvY = cnvY;
   let curParX = 0, curParY = 0;
 
-  /* custom cursor */
   const cursorEl = document.getElementById('cursor');
   let cursorCx = 0, cursorCy = 0;
   let cursorTx = 0, cursorTy = 0;
@@ -843,19 +807,15 @@
   projectsBtnEl.addEventListener('mouseenter', () => cursorEl.classList.remove('visible'));
   projectsBtnEl.addEventListener('mouseleave', () => cursorEl.classList.add('visible'));
 
-  /* render loop */
   (function tick() {
-    /* lerp lens position */
     curCnvX += (cnvX - curCnvX) * 0.11;
     curCnvY += (cnvY - curCnvY) * 0.11;
 
-    /* lerp custom cursor */
     cursorCx += (cursorTx - cursorCx) * 0.18;
     cursorCy += (cursorTy - cursorCy) * 0.18;
     cursorEl.style.left = cursorCx.toFixed(1) + 'px';
     cursorEl.style.top  = cursorCy.toFixed(1) + 'px';
 
-    /* lerp parallax offset (wrapper moves slightly with mouse) */
     const tarParX = (vpX / window.innerWidth  - 0.5) * 80;
     const tarParY = (vpY / window.innerHeight - 0.5) * 40;
     curParX += (tarParX - curParX) * 0.07;
@@ -866,20 +826,12 @@
       ctx.drawImage(src, 0, 0);
 
       const mx = curCnvX, my = curCnvY;
-      const x0 = Math.max(0, Math.floor(mx - LENS));
-      const x1 = Math.min(W - 1, Math.ceil(mx + LENS));
-      const y0 = Math.max(0, Math.floor(my - LENS));
-      const y1 = Math.min(H - 1, Math.ceil(my + LENS));
-      const pw = x1 - x0 + 1;
-      const ph = y1 - y0 + 1;
-
-      /* distance from cursor to canvas text center → scale lens strength */
       const textCx = W / 2, textCy = 510;
       const dxC = curCnvX - textCx, dyC = curCnvY - textCy;
       const distToText = Math.sqrt(dxC * dxC + dyC * dyC);
-      const MAX_DIST   = 2000;  // large influence radius
+      const MAX_DIST   = 2000;
       const proximity  = Math.max(0, 1 - distToText / MAX_DIST);
-      const activeLens = LENS * (0.25 + 0.75 * proximity);  // min 25% = 150px even far away
+      const activeLens = LENS * (0.25 + 0.75 * proximity);
       const activeLens2 = activeLens * activeLens;
 
       const ax0 = Math.max(0, Math.floor(mx - activeLens));
@@ -905,12 +857,9 @@
             if (d2 < activeLens2 && d2 > 0.25) {
               const d  = Math.sqrt(d2);
               const t  = d / activeLens;
-              /* Spherical convex lens: max ~6× magnification at center, 1× at edge.
-                 st = 0.17 + 0.83*t² → st ∈ [0.17, 1], mag = t/st ∈ [1, ~5.9×] */
               const st = 0.17 + 0.83 * t * t;
               sx = (mx + (dx / d) * st * activeLens + 0.5) | 0;
               sy = (my + (dy / d) * st * activeLens + 0.5) | 0;
-              /* out-of-bounds → background color (no smear at edges) */
               if (sx < 0 || sx >= W || sy < 0 || sy >= H) {
                 const di = (py * apw + px) << 2;
                 out[di] = 0xf7; out[di+1] = 0xf7; out[di+2] = 0xf5; out[di+3] = 255;
@@ -934,10 +883,9 @@
     requestAnimationFrame(tick);
   })();
 
-  /* ── Emoji burst — physics-based arc (throw up, gravity pulls down) ── */
   const EMOJIS = ['🖐️', '👋', '🤚'];
-  const GRAVITY = 0.22;   // px/frame²
-  const LIFE    = 180;    // frames before full fade (~3s at 60fps)
+  const GRAVITY = 0.22;
+  const LIFE    = 180;
 
   function spawnEmoji(x, y) {
     const el = document.createElement('span');
@@ -947,10 +895,9 @@
     el.style.top  = y + 'px';
     document.body.appendChild(el);
 
-    // Initial velocity: random horizontal, strong upward
-    const vx  = (Math.random() - 0.5) * 5;    // ±2.5px/frame horizontal
-    const vy  = -(8 + Math.random() * 4);     // 8–12px/frame upward
-    const rot = (Math.random() - 0.5) * 2.5; // spin speed deg/frame
+    const vx  = (Math.random() - 0.5) * 5;
+    const vy  = -(8 + Math.random() * 4);
+    const rot = (Math.random() - 0.5) * 2.5;
 
     let cx = 0, cy = 0, angle = 0, frame = 0;
     let curVy = vy;
@@ -963,7 +910,7 @@
       frame++;
 
       const opacity = Math.max(0, 1 - frame / LIFE);
-      const scale   = 0.5 + Math.min(1, frame / 12) * 0.6; // pop up quickly
+      const scale   = 0.5 + Math.min(1, frame / 12) * 0.6;
 
       el.style.transform = `translate(${cx.toFixed(1)}px, ${cy.toFixed(1)}px) rotate(${angle.toFixed(1)}deg) scale(${scale.toFixed(2)})`;
       el.style.opacity   = opacity.toFixed(3);
@@ -980,12 +927,10 @@
   document.getElementById('hello-wrap').addEventListener('click', e => {
     const count = 1 + Math.floor(Math.random() * 3);
     for (let i = 0; i < count; i++) {
-      // stagger spawns slightly so they don't all start at identical velocity
       setTimeout(() => spawnEmoji(e.clientX, e.clientY), i * 60);
     }
   });
 
-  /* ── Scroll reveal ── */
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(el => {
       if (el.isIntersecting) {

@@ -435,7 +435,7 @@
       color: var(--mid); margin-bottom: 80px;
     }
     .detail-grid {
-      display: grid; grid-template-columns: 1fr 1100px; gap: 80px;
+      display: grid; grid-template-columns: 260px 1fr; gap: 80px;
     }
 
     /* Sidebar */
@@ -785,14 +785,10 @@
           <div class="tool-icon-card">
             <div class="tic-icon" style="background:linear-gradient(150deg,#8256d0,#4a23a0);">
               <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
-                <!-- gem top -->
                 <polygon points="13,2 22,7.5 22,7.5 13,11" fill="#b490f4"/>
                 <polygon points="13,2 4,7.5 13,11" fill="#9d74e8"/>
-                <!-- gem body left -->
                 <polygon points="4,7.5 13,11 13,24 4,16" fill="#7040c0"/>
-                <!-- gem body right -->
                 <polygon points="22,7.5 13,11 13,24 22,16" fill="#5c2ea8"/>
-                <!-- gem bottom -->
                 <polygon points="13,24 4,16 22,16" fill="#3d1a85"/>
               </svg>
             </div>
@@ -804,7 +800,6 @@
           <div class="tool-icon-card">
             <div class="tic-icon" style="background:linear-gradient(150deg,#e8844a,#c45820);">
               <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
-                <!-- Claude asterisk: 5 rounded strokes -->
                 <g transform="translate(13,13)">
                   <line x1="0" y1="-8.5" x2="0" y2="8.5"  stroke="white" stroke-width="2.6" stroke-linecap="round"/>
                   <line x1="0" y1="-8.5" x2="0" y2="8.5"  stroke="white" stroke-width="2.6" stroke-linecap="round" transform="rotate(72)"/>
@@ -1015,8 +1010,7 @@
     <p>하나은행 아이부자 UX 컨설팅 프로젝트 · 2025. 12 — 2026. 03</p>
   </div>
   <div class="ft-right">
-    <p>AI &amp; UX Workflow — 2025. 12 — 2026. 03</p>
-    <p style="margin-top:6px; opacity:.6;">This portfolio was built with Claude Code by Anthropic</p>
+    <p>Portfolio 01 / AI &amp; UX Workflow</p>
   </div>
 </footer>
 
@@ -1033,7 +1027,6 @@
     const dotsWrap = document.getElementById('c-dots');
     let cur = 0, animating = false;
 
-    // build dots (display only)
     slides.forEach((_, i) => {
       const d = document.createElement('span');
       d.className = 'carousel-dot' + (i === 0 ? ' on' : '');
@@ -1046,18 +1039,15 @@
       const prev = cur;
       cur = next % slides.length;
 
-      // exit: current shrinks & fades (0.22s)
       slides[prev].classList.add('exit');
       slides[prev].classList.remove('active');
       dotsWrap.children[prev].classList.remove('on');
 
-      // enter: new scale-up starts slightly after exit begins
       setTimeout(() => {
         slides[cur].classList.add('active');
         dotsWrap.children[cur].classList.add('on');
       }, 180);
 
-      // cleanup
       setTimeout(() => {
         slides[prev].classList.remove('exit');
         animating = false;

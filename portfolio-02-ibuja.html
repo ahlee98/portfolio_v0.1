@@ -53,14 +53,9 @@
     /* img01-03 완료 전까지 이후 영역 숨김 */
     #after-cols {
       opacity: 0;
-      transition: opacity 0.8s ease;
+      transition: opacity 1s ease;
     }
     #after-cols.visible { opacity: 1; }
-    /* after-cols 표시 전까지 내부 reveal 애니메이션 동결 */
-    #after-cols:not(.visible) .reveal,
-    #after-cols:not(.visible) .reveal-slow {
-      transition: none !important;
-    }
     .reveal.visible {
       opacity: 1;
       transform: translateY(0);
@@ -224,8 +219,8 @@
        SEC 02 — PROJECT INFO
     ══════════════════════ */
     #sec-info {
-      background: var(--gray50);
-      padding: 100px 0;
+      background: var(--white);
+      padding: 40px 0 0;
     }
     .info-desc {
       font-size: 40px;
@@ -265,7 +260,6 @@
     #sec-bg {
       background: #1A1C20;
       padding: 350px 0 4px;
-      box-shadow: 0 0 0 9999px #1A1C20;
     }
     #sec-bg .text-block {
       width: 1040px;
@@ -323,8 +317,7 @@
     ══════════════════════ */
     #sec-cols {
       background: #1A1C20;
-      padding: 10px 0 80px;
-      box-shadow: 0 0 0 9999px #1A1C20;
+      padding: 80px 0 80px;
     }
     #img01-wrap-1 img,
     #img01-wrap-2 img,
@@ -338,8 +331,8 @@
        SEC 05 — DISCOVER
     ══════════════════════ */
     #sec-discover {
-      background: var(--gray50);
-      padding: 250px 0;
+      background: var(--white);
+      padding: 100px 0;
     }
     .right-text {
       width: 1040px;
@@ -372,7 +365,7 @@
     ══════════════════════ */
     #sec-define {
       background: transparent;
-      padding: 250px 0;
+      padding: 100px 0;
     }
     .single-panel {
       margin-top: 60px;
@@ -393,7 +386,7 @@
     ══════════════════════ */
     #sec-concept {
       background: transparent;
-      padding: 250px 0;
+      padding: 120px 0 100px;
     }
     .concept-text {
       max-width: 680px;
@@ -431,8 +424,7 @@
     ══════════════════════ */
     #sec-ui1, #sec-ui2 {
       background: var(--dark);
-      padding: 250px 0;
-      box-shadow: 0 0 0 9999px var(--dark);
+      padding: 100px 0;
     }
     #sec-ui1 .inner, #sec-ui2 .inner { }
     .ui-text { max-width: 1080px; }
@@ -468,12 +460,10 @@
     #sec-svg1 {
       background: var(--dark);
       padding: 80px 0 20px;
-      box-shadow: 0 0 0 9999px var(--dark);
     }
     #sec-svg2 {
       background: var(--dark);
       padding: 0 0 120px;
-      box-shadow: 0 0 0 9999px var(--dark);
     }
     /* SVG01 — PNG + confetti overlay */
     .svg1-scene {
@@ -623,7 +613,6 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      box-shadow: 0 0 0 9999px #000;
     }
     .final-label {
       font-size: 16px;
@@ -745,7 +734,6 @@
       grid-template-columns: 1fr 1fr;
       width: 1920px;
       box-sizing: border-box;
-      box-shadow: 0 0 0 9999px var(--dark);
     }
     .proj-nav-card {
       background: var(--dark);
@@ -783,7 +771,6 @@
       padding: 60px 80px;
       display: flex; justify-content: space-between; align-items: center;
       width: 1920px; box-sizing: border-box;
-      box-shadow: 0 0 0 9999px var(--dark);
     }
     .ft-left { font-size: 15px; line-height: 1.7; }
     .ft-name { color: rgba(255,255,255,.75); font-weight: 600; margin-bottom: 4px; font-size: 16px; }
@@ -999,7 +986,7 @@
 <!-- ══════════════════════
      GRADIENT WRAPPER (Define → Concept)
 ══════════════════════ -->
-<div id="gradient-wrapper" style="background: linear-gradient(180deg, rgba(246, 247, 249, 0.00) 0%, #A9B8FF 100%); transition: opacity 0.6s ease;">
+<div style="background: linear-gradient(180deg, rgba(246, 247, 249, 0.00) 0%, #A9B8FF 100%);">
 
 <!-- ══════════════════════
      SEC 06 — DEFINE
@@ -1138,15 +1125,6 @@ function applyZoom() {
 }
 applyZoom();
 window.addEventListener('resize', applyZoom);
-
-// ── Gradient wrapper fade when Define section visible ──
-const gradWrapper = document.getElementById('gradient-wrapper');
-const defineSection = document.getElementById('sec-define');
-if (gradWrapper && defineSection) {
-  new IntersectionObserver(([e]) => {
-    gradWrapper.style.opacity = e.isIntersecting ? '0' : '1';
-  }, { threshold: 0.05 }).observe(defineSection);
-}
 
 // ── Progress bar ──
 const progressBar = document.getElementById('progress');
@@ -1373,20 +1351,8 @@ initParticles('canvas-confetti', 'confetti');
 
   const observer = new MutationObserver(() => {
     if (img03.classList.contains('visible')) {
-      setTimeout(() => {
-        // 내부 reveal 요소 리셋 (visible이었다면 제거)
-        afterCols.querySelectorAll('.reveal, .reveal-slow').forEach(el => {
-          el.classList.remove('visible');
-        });
-        // after-cols 공개
-        afterCols.classList.add('visible');
-        // transition 복원 후 재관찰
-        setTimeout(() => {
-          afterCols.querySelectorAll('.reveal, .reveal-slow').forEach(el => {
-            revealObserver.observe(el);
-          });
-        }, 50);
-      }, 800);
+      // 1.2s(delay) + 2.4s(transition) 후 공개
+      setTimeout(() => afterCols.classList.add('visible'), 1000);
       observer.disconnect();
     }
   });
@@ -1414,9 +1380,6 @@ initParticles('canvas-confetti', 'confetti');
   <div class="ft-left">
     <p class="ft-name">이아현 — UX Designer &amp; Consultant</p>
     <p>하나은행 아이부자 UX 컨설팅 · 2026. 03 — 2026. 06</p>
-  </div>
-  <div class="ft-right">
-    <p>This portfolio was built with Claude Code by Anthropic</p>
   </div>
 </footer>
 
