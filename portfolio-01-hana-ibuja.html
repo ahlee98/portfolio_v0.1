@@ -26,6 +26,8 @@
       color: var(--dark);
       overflow-x: hidden;
       -webkit-font-smoothing: antialiased;
+      width: 1920px;
+      margin: 0 auto;
     }
 
     /* ── PROGRESS ── */
@@ -1030,6 +1032,13 @@
 <script>
   history.scrollRestoration = 'manual';
   window.scrollTo(0, 0);
+
+  // ── PROPORTIONAL ZOOM (1920px 기준 비율 축소) ──
+  function applyZoom() {
+    document.body.style.zoom = Math.min(window.innerWidth / 1920, 1);
+  }
+  applyZoom();
+  window.addEventListener('resize', applyZoom);
 
   /* ── Step 05 Carousel ── */
   (function() {
