@@ -1228,6 +1228,14 @@ setInterval(() => {
 }, 2500);
 
 // ── 3. PARTICLE PHYSICS ──────────────────────────
+
+// ribbon PNG 프리로드
+const ribbonImgs = [1,2,3,4].map(n => {
+  const img = new Image();
+  img.src = `./images/project02/ribbon_0${n}.png`;
+  return img;
+});
+
 function initParticles(canvasId, type) {
   const canvas = document.getElementById(canvasId);
   const scene = canvas.parentElement;
@@ -1249,8 +1257,9 @@ function initParticles(canvasId, type) {
     const count = type === 'coin' ? 10 : 30;
 
     for (let i = 0; i < count; i++) {
-      const angle = (Math.random() * Math.PI) - Math.PI; // upward spread
-      const speed = 4 + Math.random() * 6; // 초기 속도 낮춤
+      const angle = (Math.random() * Math.PI) - Math.PI;
+      const speed = 4 + Math.random() * 6;
+      const s = 36 + Math.random() * 24; // 리본 크기
       particles.push({
         x: cx + (Math.random() - 0.5) * 120,
         y: cy,
@@ -1260,10 +1269,11 @@ function initParticles(canvasId, type) {
         rotSpeed: (Math.random() - 0.5) * 0.15,
         size: type === 'coin'
           ? 16 + Math.random() * 14
-          : { w: 16 + Math.random() * 18, h: 26 + Math.random() * 18 }, // confetti 크기 대폭 확대
-        color: type === 'coin'
-          ? null
-          : ['#a78bfa','#c4b5fd','#818cf8','#fbbf24','#f0abfc','#f9a8d4','#34d399','#60a5fa'][Math.floor(Math.random() * 8)],
+          : s,
+        img: type === 'confetti'
+          ? ribbonImgs[Math.floor(Math.random() * ribbonImgs.length)]
+          : null,
+        color: type === 'coin' ? null : null,
         opacity: 1,
         life: 1,
       });
@@ -1297,21 +1307,13 @@ function initParticles(canvasId, type) {
   }
 
   function drawRibbon(ctx, p) {
+    if (!p.img || !p.img.complete) return;
     ctx.save();
     ctx.translate(p.x, p.y);
     ctx.rotate(p.rotation);
     ctx.globalAlpha = p.opacity;
-
-    ctx.fillStyle = p.color;
-    ctx.beginPath();
-    // wavy ribbon shape
-    ctx.moveTo(-p.size.w / 2, -p.size.h / 2);
-    ctx.quadraticCurveTo(0, 0, p.size.w / 2, p.size.h / 2);
-    ctx.lineTo(p.size.w / 2 - 3, p.size.h / 2);
-    ctx.quadraticCurveTo(-3, 0, -p.size.w / 2 + 3, -p.size.h / 2);
-    ctx.closePath();
-    ctx.fill();
-
+    const s = p.size;
+    ctx.drawImage(p.img, -s / 2, -s / 2, s, s);
     ctx.restore();
   }
 
@@ -1321,12 +1323,12 @@ function initParticles(canvasId, type) {
 
     let alive = false;
     for (const p of particles) {
-      p.vy += 0.18; // gravity 낮춤 → 천천히 낙하
+      p.vy += 0.18;
       p.x += p.vx;
       p.y += p.vy;
       p.rotation += p.rotSpeed;
-      p.vx *= 0.98; // air resistance
-      p.opacity = Math.max(0, 1 - (p.y / (canvas.height * 2.0))); // 더 오래 유지
+      p.vx *= 0.98;
+      p.opacity = Math.max(0, 1 - (p.y / (canvas.height * 2.0)));
 
       if (p.y < canvas.height + 60) {
         alive = true;
@@ -1341,7 +1343,7 @@ function initParticles(canvasId, type) {
     }
   }
 
-  // Trigger on scroll into view (re-triggers each time section enters viewport)
+  // Trigger on scroll into view
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting && !triggered) {
