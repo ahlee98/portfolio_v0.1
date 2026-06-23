@@ -330,7 +330,11 @@
       background: var(--gray50);
       position: relative;
     }
-    .content-section.alt { background: var(--white); }
+    .content-section.alt {
+      background: var(--white);
+      box-shadow: 0 0 0 9999px var(--white);
+      clip-path: inset(0 -9999px);
+    }
     .content-section.dark {
       background: var(--dark);
       box-shadow: 0 0 0 9999px var(--dark);
@@ -373,6 +377,8 @@
       background: #000;
       padding: 120px 80px;
       box-sizing: border-box;
+      box-shadow: 0 0 0 9999px #000;
+      clip-path: inset(0 -9999px);
     }
     .retro-inner { max-width: 1080px; }
     .retro-label {
